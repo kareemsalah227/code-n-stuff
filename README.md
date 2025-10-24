@@ -1,2 +1,1 @@
-# code-n-stuff
-Some code, and stuff!
+Like one of those random items stands in a flea market xD
