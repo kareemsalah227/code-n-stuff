@@ -1,0 +1,13 @@
+# Use the official PostgreSQL image from Docker Hub
+FROM postgres:16
+
+# Set environment variables
+# These can also be overridden at runtime with -e
+ENV POSTGRES_USER=the_user
+ENV POSTGRES_PASSWORD=the_user_wordpass
+ENV POSTGRES_DB=forms_db
+
+COPY init.sql /docker-entrypoint-initdb.d/
+
+# Expose the PostgreSQL port
+EXPOSE 5432
