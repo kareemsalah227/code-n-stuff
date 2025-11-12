@@ -7,12 +7,15 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "npx tsx watch server.ts"
+    "dev-server": "npx tsx watch server/*.ts",
+    "dev-client": "npx tsx watch client/*.ts"
   },
   "dependencies": {
+    "express": "^5.1.0",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@types/express": "^5.0.5",
     "@types/node": "^24.10.0",
     "tsx": "^4.20.6"
   }
