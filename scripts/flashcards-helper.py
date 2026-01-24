@@ -1,13 +1,47 @@
 import requests
 import json
+import os
 from google import genai
 from google.genai import types
 
+STORAGE_FILE = "storage.txt"
+WORDS_FILE = "words.txt"
 ANKI_CONNECT_URL = "http://localhost:8765"
 
 client = genai.Client()
+def normalize(w):
+    """Standardizes German words for comparison."""
+    w = w.lower().strip()
+    articles = ['der ', 'die ', 'das ', 'ein ', 'eine ']
+    for art in articles:
+        if w.startswith(art):
+            w = w[len(art):]
+            break
+    return w.strip()
+
+def get_storage_map():
+    """Loads history from storage.txt into a dictionary."""
+    mapping = {}
+    if os.path.exists(STORAGE_FILE):
+        with open(STORAGE_FILE, "r", encoding="utf-8") as f:
+            for line in f:
+                original = line.strip()
+                if original:
+                    mapping[normalize(original)] = original
+    return mapping
+
+def add_to_storage(word):
+    """Saves the processed word to your permanent history file."""
+    with open(STORAGE_FILE, "a", encoding="utf-8") as f:
+        f.write(word + "\n")
 
 def get_word_details(word):
+    # --- MOCK DATA FOR TESTING (No AI call) ---
+    # return {
+    #     "translation": f"Test Translation for {word}",
+    #     "line1": f"der {word.capitalize()}, die {word.capitalize()}n",
+    #     "line2": f"This is a test sentence for {word}."
+    # }
     # prompt = f"""
     # You are a German linguistics expert. Analyze the word: "{word}", and return 3 JSON fields, namely "translation", "line1" and "line2".
     
@@ -80,12 +114,35 @@ def add_to_anki(data):
     res = requests.post(ANKI_CONNECT_URL, json={"action": "addNote", "version": 6, "params": {"note": note}})
     return res.json()
 
-# Main Loop Logic
-with open("words.txt", "r") as f:
-    for word in f.readlines():
+def main():
+    if not os.path.exists(WORDS_FILE):
+        print(f"Error: {WORDS_FILE} not found.")
+        return
+
+    # Load history
+    processed_map = get_storage_map()
+
+    with open(WORDS_FILE, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    for word in lines:
         word = word.strip()
-        if not word: continue
+        if not word:
+            continue
         
+        # 1. Duplicate Check
+        clean_word = normalize(word)
+        if clean_word in processed_map:
+            print(f"\n⚠️  Potential Duplicate Found!")
+            print(f"New word: '{word}'")
+            print(f"In History: '{processed_map[clean_word]}'")
+            
+            dup_choice = input("Already in history. Add anyway? (y/N): ").lower()
+            if dup_choice != 'y':
+                print(f"Skipping '{word}'...")
+                continue
+
+        # 2. Analyze
         print(f"\n--- Analyzing: {word} ---")
         details = get_word_details(word)
         
@@ -94,11 +151,23 @@ with open("words.txt", "r") as f:
             print(f"Back L1: {details['line1']}")
             print(f"Back L2: {details['line2']}")
             
+            # 3. Decision
             choice = input("\n[Enter] Add | [n] Skip | [e] Edit: ").lower()
             if choice == '':
                 add_to_anki(details)
+                add_to_storage(word) # Save to memory
+                processed_map[clean_word] = word # Update memory for this session
                 print("Added to Anki.")
             elif choice == 'e':
                 details['translation'] = input("New Translation: ") or details['translation']
                 add_to_anki(details)
+                add_to_storage(word) # Save to memory
+                processed_map[clean_word] = word
                 print("Edited and Added.")
+
+    # 4. Clear words.txt
+    open(WORDS_FILE, 'w').close()
+    print(f"\n✨ Done! {WORDS_FILE} has been cleared.")
+
+if __name__ == "__main__":
+    main()
