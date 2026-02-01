@@ -1,6 +1,7 @@
 import requests
 import json
 import os
+import argparse
 from google import genai
 from google.genai import types
 
@@ -109,6 +110,10 @@ def add_to_anki(data):
     return res.json()
 
 def main():
+    parser = argparse.ArgumentParser(description="Flashcards Helper Script")
+    parser.add_argument("--skip-review", action="store_true", help="Skip review and add directly to Anki")
+    args = parser.parse_args()
+
     if not os.path.exists(WORDS_FILE):
         print(f"Error: {WORDS_FILE} not found.")
         return
@@ -146,22 +151,29 @@ def main():
             print(f"Back L2: {details['line2']}")
             
             # 3. Decision
-            choice = input("\n[Enter] Add | [n] Skip | [e] Edit: ").lower()
-            if choice == '':
+            if args.skip_review:
                 add_to_anki(details)
                 add_to_storage(word) # Save to memory
                 processed_map[clean_word] = word # Update memory for this session
                 print("Added to Anki.")
-            elif choice == 'e':
-                details['translation'] = input("New Translation: ") or details['translation']
-                add_to_anki(details)
-                add_to_storage(word) # Save to memory
-                processed_map[clean_word] = word
-                print("Edited and Added.")
+            else:
+                choice = input("\n[Enter] Add | [n] Skip | [e] Edit: ").lower()
+                if choice == '':
+                    add_to_anki(details)
+                    add_to_storage(word) # Save to memory
+                    processed_map[clean_word] = word # Update memory for this session
+                    print("Added to Anki.")
+                elif choice == 'e':
+                    details['translation'] = input("New Translation: ") or details['translation']
+                    add_to_anki(details)
+                    add_to_storage(word) # Save to memory
+                    processed_map[clean_word] = word
+                    print("Edited and Added.")
 
     # # 4. Clear words.txt
     # open(WORDS_FILE, 'w').close()
-    print(f"\n✨ Done! {WORDS_FILE} has been cleared.")
+    # print(f"\n✨ Done! {WORDS_FILE} has been cleared.")
+    print(f"\n✨ Done!")
 
 if __name__ == "__main__":
     main()
