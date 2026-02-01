@@ -11,13 +11,7 @@ ANKI_CONNECT_URL = "http://localhost:8765"
 client = genai.Client()
 def normalize(w):
     """Standardizes German words for comparison."""
-    w = w.lower().strip()
-    articles = ['der ', 'die ', 'das ', 'ein ', 'eine ']
-    for art in articles:
-        if w.startswith(art):
-            w = w[len(art):]
-            break
-    return w.strip()
+    return w.lower().strip()
 
 def get_storage_map():
     """Loads history from storage.txt into a dictionary."""

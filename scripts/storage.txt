@@ -1,67 +1,49 @@
-Sinnesorgan
-Gegensatz
-Nachtschicht
-Festgelegt
-Gering
-Edel
-Behaupten
-Ablehnen
-Beabsichtigen
+behaupten
+ablehnen
+beabsichtigen
 sich bemühen
 beschließen
 sich entschließen
 fürchten
-sich Weigern
-Befehlen
+sich weigern
+befehlen
 ermahlen
-er suchen
+ersuchen
 anbieten
-Verbieten
-Zwingen
-Gelegenheit
-Besitzen
-Vorbei Kommen
-Überwinden
-Umwandeln
-Blöd
-Alt
-Kurz
+verbieten
+zwingen
+gelegenheit
+besitzen
+vorbeikommen
+überwinden
+umwandeln
+blöd
+alt
+kurz
 nah
 oft
 bald
 wohl
-Eigenschaft
-Esel
-Fuchs
+eigenschaft
+entschließenfuchs
 schlau
 dienen
-Vertiefen
-Sehr geschickt sein
-Abfragen
-Sich die Zeiten gut einteilen
+vertiefen
+abfragen
 einteilen
-Gespräch
-Zeugnis
+gespräch
+zeugnis
 führen
-Referat
-Aufnehmen
-Sich Merken
-Veranstalten
-Ausführen
-Sich beteiligen
-Entstehen
-Erholen
-Einstand
-Gehaltserhöhung
-Viel halten Von
-Ratten
-handeln Von
-Stetig
-Energiegeladen
-Entschlussfassen
-Zitat
-Lungenflügel
-Augenlid
-Fingernagel
-MundwinkelApfel
-der Apfel
+referat
+aufnehmen
+sich merken
+veranstalten
+ausführen
+sich beteiligen
+entstehen
+erhole
+einstand
+gehaltserhöhung
+viel halten von
+ratte
+handeln von
