@@ -159,8 +159,8 @@ def main():
                 processed_map[clean_word] = word
                 print("Edited and Added.")
 
-    # 4. Clear words.txt
-    open(WORDS_FILE, 'w').close()
+    # # 4. Clear words.txt
+    # open(WORDS_FILE, 'w').close()
     print(f"\n✨ Done! {WORDS_FILE} has been cleared.")
 
 if __name__ == "__main__":
