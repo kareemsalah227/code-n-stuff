@@ -103,7 +103,7 @@ def add_to_anki(data):
     formatted_line2 = data["line2"].replace("\n", "<br>")
 
     note = {
-        "deckName": "Vom Unterricht",
+        "deckName": "Wörter",
         "modelName": "Basic",
         "fields": {
             "Front": data["translation"],
