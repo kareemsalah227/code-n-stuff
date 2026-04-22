@@ -7,10 +7,31 @@ from google.genai import types
 
 # Configuration
 INPUT_FILE = "sentences.txt"
+STORAGE_FILE = "sentences-storage.txt"
 ANKI_CONNECT_URL = "http://localhost:8765"
 ANKI_DECK_NAME = "Sätze"
 
 client = genai.Client()
+
+def normalize(s):
+    """Standardizes sentences for comparison."""
+    return s.lower().strip()
+
+def get_storage_map():
+    """Loads history from sentences-storage.txt into a dictionary."""
+    mapping = {}
+    if os.path.exists(STORAGE_FILE):
+        with open(STORAGE_FILE, "r", encoding="utf-8") as f:
+            for line in f:
+                original = line.strip()
+                if original:
+                    mapping[normalize(original)] = original
+    return mapping
+
+def add_to_storage(sentence):
+    """Saves the processed sentence to your permanent history file."""
+    with open(STORAGE_FILE, "a", encoding="utf-8") as f:
+        f.write(sentence + "\n")
 
 def get_sentence_details(sentence):
     """Uses AI to analyze the German sentence and provide translations and examples."""
@@ -83,12 +104,27 @@ def main():
         print(f"Error: {INPUT_FILE} not found.")
         return
 
+    # Load history
+    processed_map = get_storage_map()
+
     with open(INPUT_FILE, "r", encoding="utf-8") as f:
         lines = [line.strip() for line in f if line.strip()]
 
     for sentence in lines:
         print(f"\n" + "="*30)
         print(f"Processing: {sentence}")
+
+        # Duplicate Check
+        clean_sentence = normalize(sentence)
+        if clean_sentence in processed_map:
+            if args.skip_review:
+                print(f"Skipping '{sentence}' (already in history)...")
+                continue
+
+            dup_choice = input("Already in history. Add anyway? (y/N): ").lower()
+            if dup_choice != "y":
+                print(f"Skipping '{sentence}'...")
+                continue
 
         details = get_sentence_details(sentence)
 
@@ -99,15 +135,21 @@ def main():
 
             if args.skip_review:
                 add_to_anki(details)
+                add_to_storage(sentence)
+                processed_map[clean_sentence] = sentence
                 print("Result: Added to Anki.")
             else:
                 choice = input("\n[Enter] Add | [n] Skip | [e] Edit Meaning: ").lower()
                 if choice == "":
                     add_to_anki(details)
+                    add_to_storage(sentence)
+                    processed_map[clean_sentence] = sentence
                     print("Result: Added to Anki.")
                 elif choice == "e":
                     details["english_meaning"] = input("Enter custom meaning: ") or details["english_meaning"]
                     add_to_anki(details)
+                    add_to_storage(sentence)
+                    processed_map[clean_sentence] = sentence
                     print("Result: Edited and Added.")
                 else:
                     print("Result: Skipped.")
