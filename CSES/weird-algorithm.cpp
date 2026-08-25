@@ -2,7 +2,7 @@
 using namespace std;
 
 
-int main() {
+int weird_algorithm() {
     int n;
     scanf("%d", &n);
 
