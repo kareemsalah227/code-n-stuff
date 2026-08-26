@@ -8,4 +8,5 @@ add_executable(CSES weird-algorithm.cpp
         repetitions.cpp
         increasing-array.cpp
         permutations.cpp
+        number-spiral.cpp
 )
